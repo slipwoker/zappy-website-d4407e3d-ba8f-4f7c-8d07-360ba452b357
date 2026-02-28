@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <title>Explore AI Boyfriend Creations — SexyBoyfriendAI</title>
+    <meta name="description" content="Browse stunning AI characters crafted by our community. Get inspired by unique virtual companions and discover endless customization possibilities.">
+    <meta name="keywords" content="AI boyfriend, AI character gallery, virtual companion examples, community AI creations, AI boyfriend showcase">
+    
+    <!-- Zappy Analytics -->
+<script>
+(function() {
+  'use strict';
+  
+  // Configuration
+  var config = {
+    websiteId: 'd4407e3d-ba8f-4f7c-8d07-360ba452b357',
+    apiUrl: 'https://api.zappy5.com/api/analytics/track',
+    sessionDuration: 30 * 60 * 1000, // 30 minutes
+    visitorDuration: 30 * 24 * 60 * 60 * 1000, // 30 days
+    trackPageViews: true,
+    trackClicks: true,
+    trackFormSubmissions: true
+  };
+  
+  // Generate or retrieve persistent visitor ID (30 days)
+  function getVisitorId() {
+    var visitorKey = 'zappy_visitor_' + config.websiteId;
+    var visitor = null;
+    
+    try {
+      visitor = localStorage.getItem(visitorKey);
+      if (visitor) {
+        var visitorData = JSON.parse(visitor);
+        var now = Date.now();
+        
+        // Check if visitor ID is still valid (30 days)
+        if (now - visitorData.created < config.visitorDuration) {
+          // Update last seen timestamp
+          visitorData.lastSeen = now;
+          localStorage.setItem(visitorKey, JSON.stringify(visitorData));
+          return visitorData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: LocalStorage not available');
+    }
+    
+    // Generate new visitor ID
+    var newVisitorId = 'zv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      localStorage.setItem(visitorKey, JSON.stringify({
+        id: newVisitorId,
+        created: Date.now(),
+        lastSeen: Date.now()
+      }));
+    } catch (e) {
+      // Continue without local storage
+    }
+    
+    return newVisitorId;
+  }
+  
+  // Generate or retrieve session ID (30 minutes)
+  function getSessionId() {
+    var sessionKey = 'zappy_session_' + config.websiteId;
+    var session = null;
+    
+    try {
+      session = sessionStorage.getItem(sessionKey);
+      if (session) {
+        var sessionData = JSON.parse(session);
+        var now = Date.now();
+        
+        // Check if session is still valid
+        if (now - sessionData.timestamp < config.sessionDuration) {
+          // Update timestamp
+          sessionData.timestamp = now;
+          sessionStorage.setItem(sessionKey, JSON.stringify(sessionData));
+          return sessionData.id;
+        }
+      }
+    } catch (e) {
+      console.warn('Zappy Analytics: SessionStorage not available');
+    }
+    
+    // Generate new session ID
+    var newSessionId = 'zs_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    try {
+      sessionStorage.setItem(sessionKey, JSON.stringify({
+        id: newSessionId,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      // Continue without session storage
+    }
+    
+    return newSessionId;
+  }
+  
+  var visitorId = getVisitorId();
+  var sessionId = getSessionId();
+  
+  // Track an event
+  function trackEvent(eventType, data) {
+    data = data || {};
+    
+    var eventData = {
+      website_id: config.websiteId,
+      event_type: eventType,
+      page_path: window.location.pathname,
+      referrer: document.referrer || 'direct',
+      visitor_id: visitorId,
+      session_id: sessionId,
+      metadata: data
+    };
+    
+    // Use sendBeacon if available (better for page unload events)
+    if (navigator.sendBeacon) {
+      var blob = new Blob([JSON.stringify(eventData)], { type: 'application/json' });
+      navigator.sendBeacon(config.apiUrl, blob);
+    } else {
+      // Fallback to fetch
+      fetch(config.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData),
+        keepalive: true
+      }).catch(function(error) {
+        console.warn('Zappy Analytics: Failed to track event', error);
+      });
+    }
+  }
+  
+  // Track page view
+  if (config.trackPageViews) {
+    trackEvent('pageview', {
+      title: document.title,
+      url: window.location.href
+    });
+  }
+  
+  // Track clicks on important elements
+  if (config.trackClicks) {
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Track button clicks (counted as actions)
+      if (target.tagName === 'BUTTON' || target.closest('button')) {
+        var button = target.tagName === 'BUTTON' ? target : target.closest('button');
+        trackEvent('click', {
+          element: 'button',
+          text: button.textContent.trim().substring(0, 100),
+          id: button.id || null,
+          class: button.className || null
+        });
+      }
+      
+      // Track link clicks (navigation - not counted as actions)
+      else if (target.tagName === 'A' || target.closest('a')) {
+        var link = target.tagName === 'A' ? target : target.closest('a');
+        trackEvent('navigation', {
+          element: 'link',
+          text: link.textContent.trim().substring(0, 100),
+          href: link.href,
+          external: link.hostname !== window.location.hostname
+        });
+      }
+    }, true);
+  }
+  
+  // Track form submissions
+  if (config.trackFormSubmissions) {
+    document.addEventListener('submit', function(e) {
+      var form = e.target;
+      
+      trackEvent('form_submit', {
+        form_id: form.id || null,
+        form_name: form.name || null,
+        form_action: form.action || null,
+        form_method: form.method || 'GET'
+      });
+    }, true);
+  }
+  
+  // Track time on page (send on page unload)
+  var pageLoadTime = Date.now();
+  
+  window.addEventListener('beforeunload', function() {
+    var timeOnPage = Math.floor((Date.now() - pageLoadTime) / 1000); // in seconds
+    
+    trackEvent('page_unload', {
+      time_on_page: timeOnPage,
+      page_path: window.location.pathname
+    });
+  });
+  
+  // Expose tracking function globally for custom events
+  window.zappyAnalytics = {
+    track: trackEvent,
+    getVisitorId: function() { return visitorId; },
+    getSessionId: function() { return sessionId; }
+  };
+  
+})();
+</script>
+<!-- End Zappy Analytics -->
+    <meta property="og:title" content="Explore AI Boyfriend Creations — SexyBoyfriendAI">
+  <meta property="og:description" content="Browse stunning AI characters crafted by our community. Get inspired by unique virtual companions and discover endless customization possibilities.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Explore AI Boyfriend Creations — SexyBoyfriendAI">
+  <meta name="twitter:description" content="Browse stunning AI characters crafted by our community. Get inspired by unique virtual companions and discover endless customization possibilities.">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/assets/favicon-512x512.png">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+    <!-- Cookie Consent -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-cookieconsent@3/dist/cookieconsent.umd.js"></script>
+    <!-- Mickidum Accessibility Toolbar -->
+    <script src="https://cdn.jsdelivr.net/gh/mickidum/acc_toolbar/acctoolbar/acctoolbar.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+
+    <style id="zappy-dropdown-submenu-styles">
+      /* ========== DESKTOP DROPDOWN SUBMENU STYLES ========== */
+      /* Base styles for dropdown submenus - parent must be positioned */
+      .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { position: relative; }
+      /* Submenu base - hidden by default */
+      .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { display: block !important; position: absolute !important; top: 100%; left: 0; min-width: 220px; background: white; border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); padding: 8px 0; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; list-style: none; pointer-events: none; }
+      /* CRITICAL: Desktop hover styles to show dropdown */
+      .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Submenu item styling */
+      .sub-menu li { list-style: none; margin: 0; padding: 0; }
+      .sub-menu a { display: block !important; padding: 10px 16px !important; color: #333 !important; font-weight: 500; text-decoration: none; white-space: nowrap; transition: background-color 0.2s; }
+      .sub-menu a:hover { background-color: #f5f5f5; }
+      /* RTL (Hebrew/Arabic) dropdown positioning */
+      [dir="rtl"] .nav-menu .sub-menu, [dir="rtl"] nav .sub-menu, [dir="rtl"] .navbar .sub-menu, html[lang="he"] .nav-menu .sub-menu, html[lang="he"] nav .sub-menu, html[lang="he"] .navbar .sub-menu, html[lang="ar"] .nav-menu .sub-menu, html[lang="ar"] nav .sub-menu, html[lang="ar"] .navbar .sub-menu { left: auto !important; right: 0 !important; }
+      /* Hide empty dropdown menus */
+      .sub-menu:empty, .sub-menu:not(:has(li:not(.zappy-hidden-menu-item))), .sub-menu:not(:has(li)) { display: none !important; opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }
+      /* Desktop: show submenu on Menu Group hover */
+      li:has(.menu-group-title):hover > .sub-menu { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; pointer-events: auto !important; }
+      /* Menu Group title styling */
+      .nav-menu > li > .menu-group-title, #navMenu > li > .menu-group-title { display: inline-block; padding: 0.5rem 1rem; cursor: default; user-select: none; }
+      
+      /* ========== MOBILE SUBMENU STYLES ========== */
+      @media (max-width: 768px) {
+        .nav-menu .sub-menu, nav .sub-menu, .navbar .sub-menu, #navMenu .sub-menu { position: static !important; transform: none !important; box-shadow: none !important; background: transparent !important; max-height: 0; overflow: hidden; opacity: 0; visibility: hidden; transition: max-height 0.3s ease, opacity 0.3s ease; padding: 0 !important; border-radius: 0 !important; }
+        .sub-menu.mobile-expanded { max-height: 500px !important; opacity: 1 !important; visibility: visible !important; padding: 8px 0 8px 16px !important; }
+        [dir="rtl"] .sub-menu.mobile-expanded, html[lang="he"] .sub-menu.mobile-expanded { padding: 8px 16px 8px 0 !important; }
+        /* Disable hover behavior on mobile */
+        .nav-menu li:hover > .sub-menu, nav li:hover > .sub-menu, .navbar li:hover > .sub-menu, #navMenu li:hover > .sub-menu { opacity: 0; visibility: hidden; pointer-events: none; }
+        .nav-menu li > .sub-menu.mobile-expanded, nav li > .sub-menu.mobile-expanded, .navbar li > .sub-menu.mobile-expanded, #navMenu li > .sub-menu.mobile-expanded { opacity: 1 !important; visibility: visible !important; pointer-events: auto !important; }
+        .nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu) { display: flex !important; flex-wrap: wrap !important; align-items: center !important; position: relative !important; min-height: 44px !important; }
+        .nav-menu li:has(.sub-menu) > a, nav li:has(.sub-menu) > a, .navbar li:has(.sub-menu) > a, #navMenu li:has(.sub-menu) > a { flex: 1 !important; min-width: 0 !important; }
+        .nav-menu li:has(.sub-menu) > .menu-group-title, nav li:has(.sub-menu) > .menu-group-title, .navbar li:has(.sub-menu) > .menu-group-title, #navMenu li:has(.sub-menu) > .menu-group-title { flex: 1 !important; min-width: 0 !important; padding: 0 !important; line-height: inherit !important; }
+        .nav-menu li:has(.sub-menu) > .sub-menu, nav li:has(.sub-menu) > .sub-menu, .navbar li:has(.sub-menu) > .sub-menu, #navMenu li:has(.sub-menu) > .sub-menu { flex-basis: 100% !important; width: 100% !important; }
+        .nav-menu li:has(.sub-menu) > a [class*="chevron"], .nav-menu li:has(.sub-menu) > a [class*="arrow"], .nav-menu li:has(.sub-menu) > a .fa-chevron-down, .nav-menu li:has(.sub-menu) > a .fa-angle-down, nav li:has(.sub-menu) > a [class*="chevron"], nav li:has(.sub-menu) > a [class*="arrow"], #navMenu li:has(.sub-menu) > a [class*="chevron"], #navMenu li:has(.sub-menu) > a [class*="arrow"] { display: none !important; visibility: hidden !important; }
+        .mobile-submenu-toggle { display: flex !important; align-items: center !important; justify-content: center !important; width: 44px !important; height: 44px !important; background: transparent !important; border: none !important; cursor: pointer !important; color: var(--text-light) !important; position: absolute !important; top: 50% !important; transform: translateY(-50%) !important; right: 0 !important; left: auto !important; z-index: 2 !important; }
+        [dir="rtl"] .mobile-submenu-toggle, html[lang="he"] .mobile-submenu-toggle, html[lang="ar"] .mobile-submenu-toggle { left: 0 !important; right: auto !important; }
+        .mobile-submenu-toggle::after { content: '' !important; width: 0 !important; height: 0 !important; border-left: 6px solid transparent !important; border-right: 6px solid transparent !important; border-top: 7px solid currentColor !important; transition: transform 0.3s ease !important; }
+        .mobile-submenu-toggle.expanded::after { transform: rotate(180deg) !important; }
+        .sub-menu a { padding: 10px 0 !important; display: block !important; color: var(--text-light) !important; }
+        .navbar .sub-menu li a, nav.navbar .sub-menu li a, .zappy-products-dropdown .sub-menu a { color: var(--text-light) !important; }
+      }
+      @media (min-width: 769px) { .mobile-submenu-toggle { display: none !important; } }
+    </style>
+
+    <style id="zappy-widget-visibility">
+      #mic-access-tool-general-button, .mic-access-tool-general-button,
+      #mic-init-access-tool .mic-access-tool-general-button, #mic-init-access-tool #mic-access-tool-general-button,
+      ._access-icon, #mic-access-tool-box, .mic-access-tool-box,
+      #mic-init-access-tool #mic-access-tool-box, div[id*="mic-access-tool-box"], ._access-menu {
+        display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important;
+      }
+    </style>
+</head>
+<body>
+
+
+    <div class="mobile-search-panel" id="mobile-search-panel">
+      <div class="search-wrapper">
+        <input type="text" id="mobile-search-input" placeholder="Search products..." autocomplete="off">
+        <button class="search-submit" id="mobile-search-submit" title="Search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </button>
+        <button class="close-search" id="close-mobile-search">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="search-results" id="mobile-search-results"></div>
+    </div>
+  
+<script>window.ZAPPY_WEBSITE_ID = "d4407e3d-ba8f-4f7c-8d07-360ba452b357";window.ZAPPY_API_BASE = (window.location.pathname.includes('/preview') ? "https://api.zappy5.com" : "https://api.zappy5.com");</script>
+  <nav class="navbar">
+  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+    <svg class="hamburger-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+    <svg class="close-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" style="display:none;">
+      <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+    </svg>
+  </button>
+  
+  <button class="phone-header-btn" aria-label="Call">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+    </svg>
+  </button>
+  
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a href="/" class="logo-link">
+        <img src="/assets/business-logo.webp" alt="SexyBoyfriendAI" class="logo" />
+      </a>
+    </div>
+    
+    <ul class="nav-menu" id="navMenu">
+
+    <li class="menu-item-has-children zappy-products-dropdown">
+      <a href="/products">
+        Products
+        <svg class="dropdown-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
+      </a>
+      <ul class="sub-menu" id="zappy-nav-category-links">
+        <li><a href="/products">All Products</a></li>
+        <!-- Categories will be loaded dynamically -->
+      </ul>
+    </li>
+  <li><a href="/studio">Studio</a></li><li><a href="/showcase">Showcase</a></li><li><a href="/contact">Contact</a></li></ul><div class="nav-ecommerce-icons nav-icons-left"><div class="nav-search-box">
+    <input type="text" class="nav-search-input" id="nav-search-input" placeholder="Search products..." autocomplete="off">
+    <button class="nav-search-btn" id="nav-search-btn" title="Search">
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </button>
+    <div class="nav-search-results" id="nav-search-results"></div>
+  </div></div><div class="nav-ecommerce-icons nav-icons-right"><button class="nav-search-toggle" id="mobile-search-toggle" title="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button></div>
+    
+    
+  </div>
+</nav>
+
+    <nav class="zappy-catalog-menu ltr" id="zappy-catalog-menu" dir="ltr">
+      <div class="catalog-menu-container">
+        <a href="/products" class="catalog-menu-item catalog-menu-all">All Products</a>
+        <div class="catalog-menu-categories" id="zappy-category-links">
+          <!-- Categories will be loaded dynamically -->
+        </div>
+      </div>
+    </nav>
+  
+  
+  <main>
+    <section class="showcase-hero-section" data-layout-spec="Showcase-hero" data-hero-type="fullscreen-scrim">
+  <div class="showcase-hero-container">
+    <div class="showcase-hero-content">
+      <h1>Character archetypes, curated.</h1>
+      <h3>Tasteful, cinematic companions with deep personalization. Create your ideal AI character with precision and style.</h3>
+      <a href="/contact" class="btn-primary">CREATE YOURS</a>
+    </div>
+    <div class="showcase-hero-imagery">
+      <div class="showcase-hero-image-wrapper">
+        <img data-hero-bg="true" data-placeholder="showcase-hero-image-1" data-context="Premium cinematic portrait of a sophisticated male silhouette bust with dramatic neon rim lighting in magenta and cyan colors against a dark background with abstract bokeh light effects, professional studio photography style for AI companion technology platform" width="600" height="800" src="/assets/site-showcase-hero-image-1.webp" alt="Sophisticated AI character silhouette with neon lighting">
+        <div class="showcase-hero-image-glow"></div>
+      </div>
+    </div>
+  </div>
+  <div class="showcase-hero-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,120 L0,60 Q300,20 600,60 T1200,60 L1200,120 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="showcase-portfolio-section" data-layout-spec="Showcase-portfolio">
+  <div class="showcase-portfolio-container">
+    <div class="showcase-portfolio-intro">
+      <h2>Explore the vibe spectrum.</h2>
+      <p>Encourage users to start from an archetype and refine traits. Each character template is a foundation—customize personality, interests, and style to create your perfect AI companion.</p>
+    </div>
+
+    <div class="showcase-portfolio-grid">
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-1" data-context="Minimalist 3D silhouette of a confident male figure with neon cyan rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Charmer archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-1.webp" alt="The Charmer AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Charmer</h3>
+          <p>Smooth-talking wit meets genuine warmth—he knows exactly what to say.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-2" data-context="Minimalist 3D silhouette of a strong protective male figure with neon pink rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Protector archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-2.webp" alt="The Protector AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Protector</h3>
+          <p>Loyal and dependable—he's always got your back, no matter what.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-3" data-context="Minimalist 3D silhouette of a tall gentle male figure with neon purple rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Gentle Giant archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-3.webp" alt="The Gentle Giant AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Gentle Giant</h3>
+          <p>Big heart, soft touch—strength wrapped in kindness and care.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-4" data-context="Minimalist 3D silhouette of an intellectual male figure with glasses and neon blue rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Intellectual archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-4.webp" alt="The Intellectual AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Intellectual</h3>
+          <p>Deep conversations and curious mind—he loves exploring ideas with you.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-5" data-context="Minimalist 3D silhouette of a rebellious male figure in leather jacket with neon red rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Rebel archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-5.webp" alt="The Rebel AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Rebel</h3>
+          <p>Edgy and unpredictable—he breaks rules and keeps things exciting.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-6" data-context="Minimalist 3D silhouette of a romantic male figure with neon pink and gold rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Romantic archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-6.webp" alt="The Romantic AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Romantic</h3>
+          <p>Thoughtful gestures and heartfelt words—love is his language.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-7" data-context="Minimalist 3D silhouette of a stoic strong male figure with neon white rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Stoic archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-7.webp" alt="The Stoic AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Stoic</h3>
+          <p>Calm under pressure—his quiet strength speaks volumes.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-8" data-context="Minimalist 3D silhouette of a playful energetic male figure with neon yellow rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Playful archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-8.webp" alt="The Playful AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Playful</h3>
+          <p>Fun-loving and spontaneous—every moment with him is an adventure.</p>
+        </div>
+      </article>
+
+      <article class="showcase-portfolio-card">
+        <div class="showcase-portfolio-image-wrapper">
+          <img data-placeholder="showcase-portfolio-image-9" data-context="Minimalist 3D silhouette of a wise mentor male figure with neon cyan and purple rim lighting on dark background, cinematic studio lighting, Technology/Entertainment AI character creation platform, The Mentor archetype" width="600" height="400" src="/assets/site-showcase-portfolio-image-9.webp" alt="The Mentor AI character archetype">
+        </div>
+        <div class="showcase-portfolio-card-content">
+          <h3>The Mentor</h3>
+          <p>Wise guidance and patient support—he helps you grow and thrive.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="showcase-portfolio-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,80 L0,50 L100,50 L100,35 L200,35 L200,50 L300,50 L300,40 L400,40 L400,50 L500,50 L500,30 L600,30 L600,50 L700,50 L700,45 L800,45 L800,50 L900,50 L900,38 L1000,38 L1000,50 L1100,50 L1100,42 L1200,42 L1200,80 Z" fill="var(--bg-light)"></path>
+    </svg>
+  </div>
+</section>
+
+<section class="showcase-reviews-section" data-layout-spec="Showcase-reviews">
+  <div class="showcase-reviews-container">
+    <div class="showcase-reviews-header">
+      <h2>Favorite moments, told simply.</h2>
+      <p>Real users share how they've found comfort, creativity, and complete control over tone and boundaries with our AI character creation platform. Every conversation is yours to direct.</p>
+    </div>
+
+    <div class="showcase-reviews-grid">
+      <div class="showcase-review-card">
+        <p>"I love how I can adjust the personality traits to match exactly what I'm looking for. The customization options let me create someone who feels genuinely unique and respectful of my boundaries."</p>
+        <div class="showcase-review-attribution">— Alex M.</div>
+      </div>
+
+      <div class="showcase-review-card">
+        <p>"The free AI boyfriend character creator gives me total creative freedom. I can shift the vibe from playful to supportive whenever I want. It's like having a conversation partner who actually listens."</p>
+        <div class="showcase-review-attribution">— Jordan K.</div>
+      </div>
+
+      <div class="showcase-review-card">
+        <p>"What stands out is the comfort level. I never feel pressured, and I can explore different conversation styles at my own pace. The AI boyfriend adapts beautifully to my mood."</p>
+        <div class="showcase-review-attribution">— Sam R.</div>
+      </div>
+    </div>
+
+    <div class="showcase-quote-strip">
+      <div class="showcase-quote-bokeh"></div>
+      <p>"It's like directing a movie scene where you control the vibe, the tone, and every single moment."</p>
+    </div>
+  </div>
+
+  <div class="showcase-reviews-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="showcase-gold-streak" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" style="stop-color:#FFD34D;stop-"></stop>
+          <stop offset="15%" style="stop-color:#FFD34D;stop-opacity:0.4"></stop>
+          <stop offset="50%" style="stop-color:#FFB21A;stop-opacity:0.6"></stop>
+          <stop offset="85%" style="stop-color:#FFD34D;stop-opacity:0.4"></stop>
+          <stop offset="100%" style="stop-color:#FFD34D;stop-"></stop>
+        </linearGradient>
+      </defs>
+      <path d="M0,60 L0,25 Q100,22 200,28 T400,24 Q500,28 600,22 T800,26 Q900,24 1000,28 T1200,25 L1200,60 Z" fill="var(--bg-light)"></path>
+      <rect x="0" y="28" width="1200" height="3" fill="url(#showcase-gold-streak)" opacity="0.7"></rect>
+    </svg>
+  </div>
+</section>
+
+<section class="showcase-faq-section" data-layout-spec="Showcase-faq">
+  <div class="showcase-faq-container">
+    <div class="showcase-faq-intro">
+      <h2>Common questions</h2>
+      <p>Keep answers reassuring and concise</p>
+    </div>
+    
+    <div class="showcase-faq-grid">
+      <div class="showcase-faq-column">
+        <article class="showcase-faq-card">
+          <h3>What can I customize?</h3>
+          <p>You have full control over personality traits, appearance details, conversation style, and behavioral boundaries. Create a character that matches your exact preferences and interests.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>How do boundaries work?</h3>
+          <p>You set clear content preferences during character creation. The AI respects these boundaries throughout all interactions, ensuring a comfortable and personalized experience tailored to your comfort level.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>What content is not allowed?</h3>
+          <p>We prohibit any content involving minors, non-consensual scenarios, extreme violence, or illegal activities. Our AI character creation platform maintains ethical standards while offering creative freedom within responsible boundaries.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>How privacy is approached</h3>
+          <p>We implement industry-standard encryption and data protection measures. While we work to safeguard your information, no system offers absolute guarantees. Review our privacy policy for complete details on data handling practices.</p>
+        </article>
+      </div>
+      
+      <div class="showcase-faq-column">
+        <article class="showcase-faq-card">
+          <h3>Is it free to use?</h3>
+          <p>Yes, our free AI boyfriend character creator is completely free to use. Create and customize your virtual companion without any subscription fees or hidden costs.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>Can I change a character later?</h3>
+          <p>Absolutely. You can modify personality traits, appearance, and preferences anytime. Your AI boyfriend evolves with your changing interests, ensuring the experience stays fresh and relevant.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>Is this meant to replace real relationships?</h3>
+          <p>No. Our platform provides entertainment and companionship through AI technology. It's designed as a creative outlet and digital experience, not a substitute for genuine human connection and relationships.</p>
+        </article>
+        
+        <article class="showcase-faq-card">
+          <h3>How to get started</h3>
+          <p>Getting started is simple. Visit our contact page to learn more about the platform, request access, or ask specific questions about creating your first AI character.</p>
+        </article>
+      </div>
+    </div>
+  </div>
+  
+  <div class="showcase-faq-divider-wrapper">
+    <svg data-no-icon-edit="true" aria-hidden="true" viewBox="0 0 1200 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="faq-divider-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:#F5F6FA;stop-opacity:1"></stop>
+          <stop offset="100%" style="stop-color:#0F1115;stop-opacity:1"></stop>
+        </linearGradient>
+        <radialGradient id="faq-vignette" cx="50%" cy="30%" r="60%">
+          <stop offset="0%" style="stop-color:#B34CFF;stop-opacity:0.15"></stop>
+          <stop offset="100%" style="stop-color:#0F1115;stop-"></stop>
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="1200" height="100" fill="url(#faq-divider-gradient)"></rect>
+      <rect x="0" y="0" width="1200" height="100" fill="url(#faq-vignette)"></rect>
+    </svg>
+  </div>
+</section>
+
+<section class="showcase-cta-section" data-layout-spec="Showcase-cta">
+  <div class="showcase-cta-container">
+    <div class="showcase-cta-frame">
+      <div class="showcase-cta-content">
+        <h2 class="showcase-cta-heading">Pick an archetype. We'll help you refine it.</h2>
+        <p class="showcase-cta-description">Invite users to share preferences and boundaries.</p>
+        <a href="/contact" class="showcase-cta-button">CONTACT TO START</a>
+      </div>
+    </div>
+  </div>
+</section>
+  </main>
+  
+  <footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-top">
+      <div class="footer-column footer-about">
+        <img src="/assets/business-logo.webp" alt="SexyBoyfriendAI" class="logo" />
+        <p class="footer-tagline">Experience the future of AI-powered entertainment and connection.</p>
+      </div>
+      
+      <div class="footer-column footer-links">
+        <h3 class="footer-heading">Quick Links</h3>
+        <ul class="footer-nav">
+          <li><a href="/studio">Studio</a></li>
+          <li><a href="/showcase">Showcase</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-contact">
+        <h3 class="footer-heading">Get in Touch</h3>
+        <ul class="contact-list">
+          <li><i class="fas fa-envelope"></i> <a href="mailto:[business_email]">[business_email]</a></li>
+          <li><i class="fas fa-phone"></i> <a href="tel:[business_phone]">[business_phone]</a></li>
+          <li><a href="/"><i class="fas fa-map-marker-alt"></i> <span>[business_address]</span></a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column footer-social">
+        <h3 class="footer-heading">Follow Us</h3>
+        <div class="social-links">
+          <a href="[facebook_handle]" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="[instagram_handle]" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="[whatsapp_handle]" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-left">
+        <p class="copyright">© 2026 SexyBoyfriendAI. All rights reserved.</p>
+      </div>
+      <div class="footer-bottom-right">
+        <ul class="legal-links">
+          <li><a href="/privacy">Privacy Policy</a></li>
+          <li><a href="/terms">Terms &amp; Conditions</a><span class="separator">|</span>
+            <a href="/return-policy" aria-label="Return Policy">
+              Return Policy
+            </a></li>
+          <li><a href="/accessibility">Accessibility</a></li>
+        </ul>
+        <a href="https://zappy5.com" target="_blank" class="zappy-attribution">Generated by Zappy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+  
+  <a href="https://wa.me/[whatsapp_handle]" class="whatsapp-float" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  
+  <div data-integration="accessibility:toolbar"></div>
+
+    <script src="/script.js"></script>
+
+    <script id="zappy-mobile-submenu-script">
+    (function() {
+      function initMobileSubmenuToggles() {
+        if (window.innerWidth > 768) {
+          document.querySelectorAll('.mobile-submenu-toggle').forEach(function(btn) { btn.remove(); });
+          document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) { menu.classList.remove('mobile-expanded'); });
+          return;
+        }
+        var items = document.querySelectorAll('.nav-menu li:has(.sub-menu), nav li:has(.sub-menu), .navbar li:has(.sub-menu), #navMenu li:has(.sub-menu)');
+        items.forEach(function(li) {
+          if (li.querySelector('.mobile-submenu-toggle')) return;
+          var submenu = li.querySelector('.sub-menu');
+          var parentLink = li.querySelector(':scope > a');
+          if (!submenu || !parentLink) return;
+          var toggleBtn = document.createElement('button');
+          toggleBtn.className = 'mobile-submenu-toggle';
+          toggleBtn.setAttribute('aria-label', 'Toggle submenu');
+          toggleBtn.setAttribute('type', 'button');
+          parentLink.insertAdjacentElement('afterend', toggleBtn);
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault(); e.stopPropagation();
+            document.querySelectorAll('.sub-menu.mobile-expanded').forEach(function(menu) {
+              if (menu !== submenu) { menu.classList.remove('mobile-expanded'); var t = menu.parentElement.querySelector('.mobile-submenu-toggle'); if(t) t.classList.remove('expanded'); }
+            });
+            submenu.classList.toggle('mobile-expanded');
+            toggleBtn.classList.toggle('expanded');
+          });
+        });
+      }
+      if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initMobileSubmenuToggles); }
+      else { initMobileSubmenuToggles(); }
+      var resizeTimer; window.addEventListener('resize', function() { clearTimeout(resizeTimer); resizeTimer = setTimeout(initMobileSubmenuToggles, 250); });
+      // Re-initialize when mobile menu becomes visible (MutationObserver)
+      var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+          if (mutation.type === 'attributes') {
+            var target = mutation.target;
+            if (target.classList && (target.classList.contains('active') || target.classList.contains('open'))) {
+              setTimeout(initMobileSubmenuToggles, 100);
+            }
+          }
+        });
+      });
+      setTimeout(function() {
+        document.querySelectorAll('.mobile-menu, .nav-menu, #navMenu, nav').forEach(function(menu) {
+          observer.observe(menu, { attributes: true, attributeFilter: ['class', 'style'] });
+        });
+      }, 500);
+    })();
+    </script>
+</body>
+</html>
